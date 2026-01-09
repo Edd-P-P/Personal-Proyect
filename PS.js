@@ -1,299 +1,259 @@
-// PS.js - Gestor de Contraseñas Seguro (Versión Cifrada)
+// PS.js - SISTEMA DE SEGURIDAD MEJORADO
+// Este archivo se carga después de Passwords.html
 
-// Variables globales
-let masterKey = '';
-let encryptedData = {};
-let decryptedData = {};
-
-// Elementos del DOM
-const authScreen = document.getElementById('authScreen');
-const passwordGrid = document.getElementById('passwordGrid');
-const masterPasswordInput = document.getElementById('masterPassword');
-const authButton = document.getElementById('authButton');
-const errorMessage = document.getElementById('errorMessage');
-const modal = document.getElementById('passwordModal');
-const closeModal = document.getElementById('closeModal');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const modalService = document.getElementById('modalService');
-const modalUsername = document.getElementById('modalUsername');
-const modalPassword = document.getElementById('modalPassword');
-const modalAdditional = document.getElementById('modalAdditional');
-
-// Datos de servicios con sus clases CSS e iconos
-const servicesConfig = {
-    // Servicios originales
-    'Discord': { class: 'DI', icon: 'fab fa-discord' },
-    'Claro Video': { class: 'CL', icon: 'fas fa-video' },
-    'Gmail': { class: 'GM', icon: 'fab fa-google' },
-    'Signal': { class: 'SI', icon: 'fas fa-comment-alt' },
-    'Mercado Libre': { class: 'ML', icon: 'fas fa-shopping-cart' },
-    'PayPal': { class: 'PY', icon: 'fab fa-paypal' },
-    'Facebook': { class: 'FB', icon: 'fab fa-facebook' },
-    'Huawei': { class: 'HU', icon: 'fas fa-mobile-alt' },
-    'Tibia': { class: 'TI', icon: 'fas fa-gamepad' },
-    'Xiaomi': { class: 'MI', icon: 'fas fa-bolt' },
-    'Steam': { class: 'ST', icon: 'fab fa-steam' },
-    'Amazon': { class: 'AM', icon: 'fab fa-amazon' },
-    'Remote Desktop': { class: 'RD', icon: 'fas fa-desktop' },
-    'Battle.net': { class: 'BT', icon: 'fas fa-crosshairs' },
+(function() {
+    'use strict';
     
-    // Nuevos servicios solicitados
-    'Subes Benito Juárez': { class: 'SB', icon: 'fas fa-bus' },
-    'Bendy in Nightmare': { class: 'BN', icon: 'fas fa-ghost' },
-    'Bodega Aurrera': { class: 'BA', icon: 'fas fa-store' },
-    'Twitter': { class: 'TW', icon: 'fab fa-twitter' },
-    'Mega': { class: 'MG', icon: 'fas fa-cloud' },
-    'Twitch': { class: 'TV', icon: 'fab fa-twitch' },
-    'Disney Plus': { class: 'DP', icon: 'fas fa-film' },
-    'Max (HBO)': { class: 'MX', icon: 'fas fa-tv' },
-    'ChatGPT': { class: 'CG', icon: 'fas fa-robot' },
-    'UAEH': { class: 'UH', icon: 'fas fa-university' },
-    'Cinemex': { class: 'CX', icon: 'fas fa-film' },
-    'Roblox': { class: 'RB', icon: 'fas fa-cube' },
-    'Discord (2da cuenta)': { class: 'DI', icon: 'fab fa-discord' },
-    'Ok Internacional': { class: 'OK', icon: 'fas fa-globe' },
-    'Injustice 1': { class: 'IJ', icon: 'fas fa-fist-raised' },
-    'Hotmail': { class: 'HM', icon: 'fas fa-envelope' },
-    'Mi Telcel': { class: 'TC', icon: 'fas fa-phone-alt' },
-    'Walmart': { class: 'WM', icon: 'fas fa-shopping-bag' },
-    'Saiyan\'s Return': { class: 'SR', icon: 'fas fa-dragon' },
-    'Call of Duty': { class: 'CD', icon: 'fas fa-gun' },
-    'IPN': { class: 'IP', icon: 'fas fa-graduation-cap' },
-    'Pidae': { class: 'PD', icon: 'fas fa-chart-line' },
-    'Sicert': { class: 'SC', icon: 'fas fa-certificate' },
-    'Udemy': { class: 'UD', icon: 'fab fa-udemy' },
-    'Salud Digna': { class: 'SD', icon: 'fas fa-heartbeat' },
-    'ORCID': { class: 'OC', icon: 'fas fa-id-badge' },
-    'GitHub': { class: 'GH', icon: 'fab fa-github' },
-    'Padhi': { class: 'PH', icon: 'fas fa-user-circle' },
-    'SAT': { class: 'SAT', icon: 'fas fa-file-invoice-dollar' }
-};
-
-// Función para cargar datos cifrados desde el archivo JSON
-async function loadEncryptedData() {
-    try {
-        const response = await fetch('data/passwords.enc.json');
-        if (!response.ok) {
-            throw new Error('No se pudo cargar el archivo de contraseñas');
-        }
-        encryptedData = await response.json();
-        console.log('Datos cifrados cargados correctamente');
-        return true;
-    } catch (error) {
-        console.error('Error cargando datos cifrados:', error);
-        errorMessage.textContent = 'Error cargando los datos cifrados. Verifica que el archivo exista.';
-        errorMessage.style.display = 'block';
-        return false;
-    }
-}
-
-// Función para descifrar todas las contraseñas
-function decryptAllPasswords() {
-    decryptedData = {};
+    // 🔐 CONSTANTES DE SEGURIDAD
+    const SECURITY_HASH = "ENCRYPTED_SYSTEM_V1_" + btoa("DYNAMIC_PASSWORDS_2024");
+    const REQUIRED_ELEMENTS = ['authScreen', 'passwordGrid', 'masterPassword', 'authButton'];
     
-    for (const [service, encrypted] of Object.entries(encryptedData)) {
+    // 🛡️ VERIFICACIÓN DE INTEGRIDAD DEL SISTEMA
+    function verifySystemIntegrity() {
         try {
-            // Descifrar el texto cifrado
-            const decryptedBytes = CryptoJS.AES.decrypt(encrypted, masterKey);
-            const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
-            
-            if (decryptedText) {
-                // Parsear el JSON descifrado
-                decryptedData[service] = JSON.parse(decryptedText);
+            // 1. Verificar elementos DOM críticos
+            for (const id of REQUIRED_ELEMENTS) {
+                if (!document.getElementById(id)) {
+                    console.error(`[SEGURIDAD] Elemento ${id} no encontrado`);
+                    return false;
+                }
             }
+            
+            // 2. Verificar que CryptoJS esté cargado
+            if (typeof CryptoJS === 'undefined' || !CryptoJS.AES) {
+                console.error('[SEGURIDAD] CryptoJS no está disponible');
+                return false;
+            }
+            
+            // 3. Verificar que las funciones críticas existan
+            const requiredFunctions = ['authenticate', 'decryptAllPasswords', 'loadEncryptedData'];
+            for (const funcName of requiredFunctions) {
+                if (typeof window[funcName] === 'undefined') {
+                    console.error(`[SEGURIDAD] Función ${funcName} no encontrada`);
+                    return false;
+                }
+            }
+            
+            // 4. Verificar que no se haya manipulado el objeto PasswordManager
+            if (!window.PasswordManager || typeof window.PasswordManager !== 'object') {
+                console.error('[SEGURIDAD] PasswordManager no disponible');
+                return false;
+            }
+            
+            return true;
+            
         } catch (error) {
-            console.warn(`Error descifrando ${service}:`, error);
+            console.error('[SEGURIDAD] Error en verificación:', error);
+            return false;
         }
     }
     
-    return Object.keys(decryptedData).length > 0;
-}
-
-// Función para mostrar los botones de servicios
-function renderPasswordButtons() {
-    passwordGrid.innerHTML = '';
-    
-    Object.keys(servicesConfig).forEach(service => {
-        const config = servicesConfig[service];
-        const button = document.createElement('button');
-        
-        button.className = `password-btn ${config.class}`;
-        button.setAttribute('data-service', service);
-        button.innerHTML = `
-            <i class="${config.icon}"></i>
-            <span>${service}</span>
+    // 🚨 MOSTRAR ALERTA DE SEGURIDAD
+    function showSecurityAlert(reason) {
+        const alertHTML = `
+            <div style="
+                position: fixed;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                background: #0f172a;
+                z-index: 99999;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                padding: 20px;
+                color: white;
+            ">
+                <h1 style="color: #ff6b6b; font-size: 2.5rem; margin-bottom: 20px;">
+                    <i class="fas fa-shield-alt"></i> ALERTA DE SEGURIDAD
+                </h1>
+                <p style="font-size: 1.2rem; margin-bottom: 10px;">
+                    Se ha detectado una violación de seguridad.
+                </p>
+                <p style="margin-bottom: 20px; color: #ccc;">
+                    Razón: ${reason}
+                </p>
+                <p style="margin-bottom: 30px;">
+                    Por seguridad, el sistema ha sido bloqueado.
+                </p>
+                <button onclick="location.reload()" style="
+                    background: #2dd4bf;
+                    color: #0f172a;
+                    border: none;
+                    padding: 15px 30px;
+                    border-radius: 10px;
+                    font-size: 1.1rem;
+                    cursor: pointer;
+                    font-weight: bold;
+                ">
+                    <i class="fas fa-redo"></i> Recargar Página
+                </button>
+            </div>
         `;
         
-        // Verificar si existen credenciales para este servicio
-        if (!decryptedData[service]) {
-            button.style.opacity = '0.5';
-            button.title = 'No hay credenciales guardadas para este servicio';
-        }
-        
-        button.addEventListener('click', () => showCredentials(service));
-        
-        passwordGrid.appendChild(button);
-    });
-}
-
-// Función para mostrar credenciales en el modal
-function showCredentials(service) {
-    const credentials = decryptedData[service];
-    
-    if (!credentials) {
-        alert(`No hay credenciales guardadas para ${service}`);
-        return;
+        document.body.innerHTML = alertHTML;
+        return false;
     }
     
-    // Actualizar contenido del modal
-    modalService.textContent = service;
-    modalUsername.textContent = credentials.username || 'No disponible';
-    modalPassword.textContent = credentials.password || 'No disponible';
-    modalAdditional.textContent = credentials.additional || 'Sin información adicional';
-    
-    // Mostrar modal
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-// Función para copiar al portapapeles
-function setupCopyButtons() {
-    document.querySelectorAll('.copy-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const target = this.getAttribute('data-target');
-            let textToCopy = '';
-            
-            if (target === 'username') {
-                textToCopy = modalUsername.textContent;
-            } else if (target === 'password') {
-                textToCopy = modalPassword.textContent;
+    // 🔍 DETECTAR MANIPULACIÓN EN TIEMPO REAL
+    function setupRealTimeMonitoring() {
+        // Monitorear cambios en elementos críticos
+        const criticalSelectors = [
+            '#authScreen', '#passwordGrid', '#masterPassword',
+            '#authButton', '#securityAlert', '.modal-overlay'
+        ];
+        
+        let originalHTML = {};
+        criticalSelectors.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                originalHTML[selector] = element.outerHTML;
             }
-            
-            // Usar la API del portapapeles
-            navigator.clipboard.writeText(textToCopy)
-                .then(() => {
-                    // Efecto visual de copiado
-                    const originalText = this.innerHTML;
-                    this.innerHTML = '<i class="fas fa-check"></i> Copiado!';
-                    this.style.background = 'var(--accent-green)';
-                    this.style.color = 'var(--dark-bg)';
-                    
-                    setTimeout(() => {
-                        this.innerHTML = originalText;
-                        this.style.background = '';
-                        this.style.color = '';
-                    }, 1500);
-                })
-                .catch(err => {
-                    console.error('Error al copiar: ', err);
-                    alert('No se pudo copiar al portapapeles');
-                });
-        });
-    });
-}
-
-// Función para cerrar el modal
-function setupModalClose() {
-    const closeFunctions = [
-        () => closeModal.addEventListener('click', closeModalFunc),
-        () => closeModalBtn.addEventListener('click', closeModalFunc),
-        () => modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModalFunc();
-        }),
-        () => document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && modal.classList.contains('active')) {
-                closeModalFunc();
-            }
-        })
-    ];
-    
-    function closeModalFunc() {
-        modal.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    }
-    
-    closeFunctions.forEach(fn => fn());
-}
-
-// Función de autenticación
-async function authenticate() {
-    masterKey = masterPasswordInput.value.trim();
-    
-    if (!masterKey) {
-        errorMessage.textContent = 'Por favor, introduce tu clave maestra';
-        errorMessage.style.display = 'block';
-        return;
-    }
-    
-    // Cargar datos cifrados
-    const loaded = await loadEncryptedData();
-    if (!loaded) return;
-    
-    // Intentar descifrar
-    const success = decryptAllPasswords();
-    
-    if (success && Object.keys(decryptedData).length > 0) {
-        // Autenticación exitosa
-        errorMessage.style.display = 'none';
-        authScreen.style.display = 'none';
-        passwordGrid.style.display = 'grid';
-        
-        // Renderizar botones
-        renderPasswordButtons();
-        
-        // Configurar modal
-        setupModalClose();
-        setupCopyButtons();
-        
-        // Efecto de aparición escalonada
-        const buttons = document.querySelectorAll('.password-btn');
-        buttons.forEach((button, index) => {
-            button.style.animationDelay = `${index * 0.05}s`;
         });
         
-        // Limpiar campo de contraseña (por seguridad)
-        masterPasswordInput.value = '';
-        
-        // Efecto de brillo aleatorio en botones
+        // Verificar periódicamente
         setInterval(() => {
-            const activeButtons = document.querySelectorAll('.password-btn:not([style*="opacity: 0.5"])');
-            if (activeButtons.length > 0) {
-                const randomButton = activeButtons[Math.floor(Math.random() * activeButtons.length)];
-                randomButton.style.boxShadow = '0 0 20px rgba(45, 212, 191, 0.7)';
-                setTimeout(() => {
-                    randomButton.style.boxShadow = '';
-                }, 1000);
-            }
-        }, 3000);
-        
-    } else {
-        // Autenticación fallida
-        errorMessage.textContent = 'Clave maestra incorrecta o datos corruptos';
-        errorMessage.style.display = 'block';
-        masterPasswordInput.value = '';
-        masterPasswordInput.focus();
+            criticalSelectors.forEach(selector => {
+                const element = document.querySelector(selector);
+                if (element && originalHTML[selector]) {
+                    if (element.outerHTML !== originalHTML[selector]) {
+                        showSecurityAlert(`Manipulación detectada en ${selector}`);
+                    }
+                } else if (!element && originalHTML[selector]) {
+                    showSecurityAlert(`Elemento eliminado: ${selector}`);
+                }
+            });
+        }, 2000);
     }
-}
-
-// Event Listeners
-document.addEventListener('DOMContentLoaded', async () => {
-    // Configurar botón de autenticación
-    authButton.addEventListener('click', authenticate);
     
-    // Permitir autenticación con Enter
-    masterPasswordInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            authenticate();
+    // 🛑 PROTECCIÓN CONTRA DEBUGGERS
+    function antiDebugProtection() {
+        // Detectar debugger con performance
+        let lastTime = Date.now();
+        setInterval(() => {
+            const currentTime = Date.now();
+            if (currentTime > (lastTime + 100)) {
+                // Demasiado tiempo, posible debugger
+                showSecurityAlert('Herramientas de desarrollo detectadas');
+            }
+            lastTime = currentTime;
+        }, 100);
+        
+        // Sobrescribir console methods
+        const originalConsole = {
+            log: console.log,
+            error: console.error,
+            warn: console.warn
+        };
+        
+        console.log = function(...args) {
+            if (args.join(' ').toLowerCase().includes('password') || 
+                args.join(' ').toLowerCase().includes('masterkey')) {
+                showSecurityAlert('Intento de logging de credenciales');
+                return;
+            }
+            originalConsole.log.apply(console, args);
+        };
+    }
+    
+    // 🔄 INTERCEPTAR LLAMADAS A FUNCIONES CRÍTICAS
+    function protectCriticalFunctions() {
+        // Interceptar authenticate si existe
+        if (window.authenticate && typeof window.authenticate === 'function') {
+            const originalAuthenticate = window.authenticate;
+            window.authenticate = function() {
+                // Verificar seguridad antes de ejecutar
+                if (!verifySystemIntegrity()) {
+                    showSecurityAlert('Integridad del sistema comprometida');
+                    return Promise.reject('Security violation');
+                }
+                
+                // Limitar tasa de intentos
+                if (!window.authAttempts) window.authAttempts = 0;
+                window.authAttempts++;
+                
+                if (window.authAttempts > 5) {
+                    showSecurityAlert('Demasiados intentos de autenticación');
+                    return Promise.reject('Too many attempts');
+                }
+                
+                return originalAuthenticate.apply(this, arguments);
+            };
         }
-    });
+        
+        // Interceptar decryptAllPasswords si existe
+        if (window.decryptAllPasswords && typeof window.decryptAllPasswords === 'function') {
+            const originalDecrypt = window.decryptAllPasswords;
+            window.decryptAllPasswords = function() {
+                // Verificar que haya una clave maestra
+                if (!window.masterKey || window.masterKey.length < 1) {
+                    console.error('[SEGURIDAD] Intento de descifrado sin clave');
+                    return false;
+                }
+                
+                // Verificar que haya datos para descifrar
+                if (!window.encryptedData || Object.keys(window.encryptedData).length === 0) {
+                    console.error('[SEGURIDAD] No hay datos cifrados');
+                    return false;
+                }
+                
+                const result = originalDecrypt.apply(this, arguments);
+                
+                // Verificar que el descifrado produjo resultados
+                if (!result || !window.decryptedData) {
+                    console.error('[SEGURIDAD] Descifrado fallido');
+                    return false;
+                }
+                
+                return result;
+            };
+        }
+    }
     
-    // Enfocar el campo de contraseña al cargar
-    masterPasswordInput.focus();
-});
-
-// Exportar funciones para uso externo (si es necesario)
-window.PasswordManager = {
-    authenticate,
-    showCredentials,
-    getDecryptedData: () => decryptedData
-};
+    // 🚀 INICIALIZAR SISTEMA DE SEGURIDAD
+    function initializeSecuritySystem() {
+        console.log('[SEGURIDAD] Inicializando sistema de protección...');
+        
+        // 1. Verificar integridad inicial
+        if (!verifySystemIntegrity()) {
+            return showSecurityAlert('Verificación de integridad fallida');
+        }
+        
+        // 2. Configurar monitoreo en tiempo real
+        setupRealTimeMonitoring();
+        
+        // 3. Proteger contra debugging (solo en producción)
+        if (window.location.hostname.includes('github.io')) {
+            antiDebugProtection();
+        }
+        
+        // 4. Interceptar funciones críticas
+        protectCriticalFunctions();
+        
+        // 5. Configurar watchdog
+        setInterval(() => {
+            if (!verifySystemIntegrity()) {
+                showSecurityAlert('Verificación periódica fallida');
+            }
+        }, 10000);
+        
+        console.log('[SEGURIDAD] Sistema de protección activado');
+        return true;
+    }
+    
+    // 📦 EXPORTAR FUNCIONES DE SEGURIDAD
+    window.SecuritySystem = {
+        initialize: initializeSecuritySystem,
+        verify: verifySystemIntegrity,
+        showAlert: showSecurityAlert
+    };
+    
+    // ⏱️ INICIALIZAR CUANDO EL DOM ESTÉ LISTO
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeSecuritySystem);
+    } else {
+        initializeSecuritySystem();
+    }
+    
+})();
