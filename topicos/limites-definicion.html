@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definición de Límite - Cálculo Diferencial</title>
+    <link rel="icon" type="image/png" href="../Pics/DRM.png">
+    
+    <!-- Fuentes de Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Orbitron:wght@400;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Iconos de FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- MathJax 3 para fórmulas matemáticas -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']],
+          processEscapes: true,
+          packages: {'[+]': ['ams', 'boldsymbol']}
+        },
+        options: {
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+          ignoreHtmlClass: 'tex2jax_ignore',
+          processHtmlClass: 'tex2jax_process'
+        },
+        startup: {
+          ready: () => {
+            MathJax.startup.defaultReady();
+            console.log('MathJax está listo');
+          }
+        }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: linear-gradient(135deg, #0c0c2e 0%, #1a1a3e 100%);
+            color: #e0e0ff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #00d4ff, #ff00ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
+        }
+        
+        .breadcrumb {
+            font-size: 0.9rem;
+            color: #aaaaff;
+            margin-bottom: 10px;
+        }
+        
+        .breadcrumb a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+        
+        .content {
+            background: rgba(20, 20, 60, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .content h2 {
+            color: #00d4ff;
+            margin: 25px 0 15px;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .content p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .definition-box {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid #00d4ff;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .example {
+            background: rgba(255, 0, 212, 0.1);
+            border-left: 4px solid #ff00ff;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        /* Estilos para fórmulas matemáticas */
+        .math-formula {
+            font-size: 1.3rem;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        
+        /* Fórmulas en línea */
+        .math-inline {
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        /* Fórmulas centradas */
+        .math-display {
+            text-align: center;
+            margin: 25px 0;
+            padding: 15px;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            margin-top: 20px;
+        }
+        
+        .back-btn:hover {
+            background: rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #8888cc;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .math-formula {
+                font-size: 1.1rem;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="breadcrumb">
+                <a href="../index.html">Inicio</a> &gt; 
+                <a href="../Proyects.html">Proyectos</a> &gt; 
+                <a href="../Proyects.html#licenciatura-courses">Cálculo Diferencial</a> &gt; 
+                <span>Definición de Límite</span>
+            </div>
+            <h1>Definición de Límite</h1>
+            <p style="color: #aaaaff;">Cálculo Diferencial - Licenciatura</p>
+        </div>
+        
+        <div class="content">
+            <h2><i class="fas fa-calculator"></i> Concepto Intuitivo</h2>
+            <p>En matemáticas, el concepto de límite describe el comportamiento de una función cuando su argumento se acerca a un cierto punto. Decimos que el límite de $f(x)$ cuando $x$ tiende a $a$ es $L$, y escribimos:</p>
+            
+            <div class="math-display">
+                $$\lim_{x \to a} f(x) = L$$
+            </div>
+            
+            <p>si para todo $\epsilon > 0$ existe un $\delta > 0$ tal que si $0 < |x - a| < \delta$, entonces $|f(x) - L| < \epsilon$.</p>
+            
+            <div class="definition-box">
+                <h3><i class="fas fa-lightbulb"></i> Definición Formal (épsilon-δ)</h3>
+                <p>Sea $f$ una función definida en algún intervalo abierto que contiene al punto $a$ (excepto posiblemente en $a$ mismo). Decimos que el límite de $f(x)$ cuando $x$ tiende a $a$ es $L$ si:</p>
+                
+                <div class="math-display">
+                    $$\forall \epsilon > 0, \exists \delta > 0 : 0 < |x - a| < \delta \implies |f(x) - L| < \epsilon$$
+                </div>
+                
+                <p>Esta es la conocida definición épsilon-delta del límite.</p>
+            </div>
+            
+            <h2><i class="fas fa-chart-line"></i> Ejemplos de Límites</h2>
+            
+            <div class="example">
+                <h3><i class="fas fa-book"></i> Ejemplo 1: Límite de una función lineal</h3>
+                <p>Calcular el límite de $f(x) = 3x + 2$ cuando $x$ tiende a 4:</p>
+                
+                <div class="math-display">
+                    $$\lim_{x \to 4} (3x + 2) = 3(4) + 2 = 14$$
+                </div>
+                
+                <p>Esto significa que cuando $x$ se acerca a 4, $f(x)$ se acerca a 14.</p>
+            </div>
+            
+            <div class="example">
+                <h3><i class="fas fa-book"></i> Ejemplo 2: Límite de una función racional</h3>
+                <p>Calcular el límite:</p>
+                
+                <div class="math-display">
+                    $$\lim_{x \to 2} \frac{x^2 - 4}{x - 2}$$
+                </div>
+                
+                <p>Solución: Factorizamos el numerador:</p>
+                
+                <div class="math-display">
+                    $$\frac{x^2 - 4}{x - 2} = \frac{(x-2)(x+2)}{x-2} = x+2 \quad \text{para } x \neq 2$$
+                </div>
+                
+                <p>Por lo tanto:</p>
+                
+                <div class="math-display">
+                    $$\lim_{x \to 2} \frac{x^2 - 4}{x - 2} = \lim_{x \to 2} (x+2) = 4$$
+                </div>
+            </div>
+            
+            <h2><i class="fas fa-exclamation-triangle"></i> Propiedades de los Límites</h2>
+            <p>Si $\lim_{x \to a} f(x) = L$ y $\lim_{x \to a} g(x) = M$, entonces:</p>
+            
+            <ul style="margin-left: 30px; margin-bottom: 20px;">
+                <li>$\lim_{x \to a} [f(x) + g(x)] = L + M$</li>
+                <li>$\lim_{x \to a} [f(x) - g(x)] = L - M$</li>
+                <li>$\lim_{x \to a} [f(x) \cdot g(x)] = L \cdot M$</li>
+                <li>$\lim_{x \to a} \frac{f(x)}{g(x)} = \frac{L}{M}$, si $M \neq 0$</li>
+                <li>$\lim_{x \to a} [c \cdot f(x)] = c \cdot L$, donde $c$ es una constante</li>
+                <li>$\lim_{x \to a} [f(x)]^n = L^n$, para cualquier entero $n$</li>
+            </ul>
+            
+            <h2><i class="fas fa-infinity"></i> Límites Especiales</h2>
+            
+            <div class="math-display">
+                $$\lim_{x \to 0} \frac{\sin x}{x} = 1$$
+            </div>
+            
+            <div class="math-display">
+                $$\lim_{x \to \infty} \left(1 + \frac{1}{x}\right)^x = e$$
+            </div>
+            
+            <div class="math-display">
+                $$\lim_{x \to 0} \frac{e^x - 1}{x} = 1$$
+            </div>
+            
+            <div class="math-display">
+                $$\lim_{x \to 0} \frac{\ln(1 + x)}{x} = 1$$
+            </div>
+            
+            <a href="../Proyects.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver a Proyectos</a>
+        </div>
+        
+        <div class="footer">
+            <p>© 2026 Edward Blake PP | Cálculo Diferencial - Definición de Límite</p>
+            <p style="font-size: 0.8rem; margin-top: 10px;">Fórmulas renderizadas con MathJax</p>
+        </div>
+    </div>
+    
+    <!-- Script para manejar el recálculo de fórmulas si es necesario -->
+    <script>
+        // Si tienes contenido dinámico, puedes forzar a MathJax a reprocesar
+        function reprocessMath() {
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+        
+        // Ejemplo de cómo usar después de cargar contenido dinámico
+        // reprocessMath();
+    </script>
+</body>
+</html>
